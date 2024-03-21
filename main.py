@@ -2,6 +2,13 @@ from tkinter import *
 
 class Converter:
   def __init__(self):
+    #Initialise Variables (such as the feedback variable)
+    self.var_feedback = StringVar()
+    self.var_feedback.set("")
+    
+    self.Var_has_error = StringVar()
+    self.Var_has_error.set("no")
+    
     #common format all buttons
     # Arial size 14 bold with white text
     button_font = ("Arial", "12", "bold")
@@ -38,28 +45,49 @@ class Converter:
   def check_temp(self, min_value):
     has_error = "no"
     error = "Please enter a number that is more than {}".format(min_value)
+    response = self.temp_entry.get()
     try:
-      response = self.temp_entry.get()
+      
       response = float(response)
       if response < min_value:
         has_error = "yes"
-        self.temp_error.config(text=error)
       
     except ValueError:
       has_error = "yes"
 
-    #
+    #set Var_has_error so that entry box and labels can be correctly formatted by formatting function
     if has_error == "yes":
-      self.temp_error.config(text=error, fg="red")
+      self.Var_has_error.set("yes")
+      self.var_feedback.set(error)
+      return "invalid"
     else:
-      self.temp_error.config(text="it Ok", fg="green")
-      
-      #if we have at least one valid, enable history / export button
+      # set to 'no' in case of previous errors
+      self.Var_has_error.set("no")
+      #return number to be converted and enable history button
       self.to_history_button.config(state=NORMAL)
+      return response
   
   def to_celsius(self):
-    self.check_temp(-459)
+    to_conver = self.check_temp(-459)
+    if to_conver != "invalid":
+      # do calulation
+      self.var_feedback.set("Converting {} to Celsius".format(to_conver))
+      
+    self.output_answer()
 
+  #shows user output and clears entry widget ready for next calculations
+  def output_answer(self):
+    output = self.var_feedback.get()
+    has_error = self.Var_has_error.get()
+    
+    if has_error == "yes":
+      # red text, pink entry box
+      self.temp_error.config(fg="red")
+      self.temp_entry.config(bg="pink")
+    else:
+      self.temp_error.config(fg="blue")
+      self.temp_entry.config(bg="white")
+    self.temp_error.config(text=output)
 #main routine
 if __name__ == "__main__":
   root = Tk()
