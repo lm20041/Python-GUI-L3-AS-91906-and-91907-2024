@@ -72,7 +72,7 @@ class Converter:
   def round_ans(self, answer):
     var_rounded = round(answer)
     return var_rounded
-    
+
   #check temp is valid and convert it
   def temp_convert(self, min_val):
     to_convert = self.check_temp(min_val)
