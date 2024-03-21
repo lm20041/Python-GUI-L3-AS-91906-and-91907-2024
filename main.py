@@ -17,6 +17,12 @@ class Converter:
     self.temp_error = Label(self.temp_frame, text=error, fg="red")
     self.temp_error.grid(row=3)
 
+    # convert button
+    self.button_frame = Frame(self.temp_frame)
+    self.button_frame.grid(row=4)
+    self.to_celsius_button = Button(self.button_frame, text="To Degrees C", bg="#990099", fg="#FFFFFF")
+    self.to_celsius_button.grid(row=0, column=0)
+
 #main routine
 if __name__ == "__main__":
   root = Tk()
