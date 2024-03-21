@@ -36,17 +36,26 @@ class Converter:
     self.to_history_button.grid(row=1, column=1, padx=5, pady=5)
 
   def check_temp(self, min_value):
+    has_error = "no"
     error = "Please enter a number that is more than {}".format(min_value)
     try:
       response = self.temp_entry.get()
       response = float(response)
       if response < min_value:
+        has_error = "yes"
         self.temp_error.config(text=error)
-      else:
-        return response
-  
+      
     except ValueError:
-      self.temp_error.config(text=error)
+      has_error = "yes"
+
+    #
+    if has_error == "yes":
+      self.temp_error.config(text=error, fg="red")
+    else:
+      self.temp_error.config(text="it Ok", fg="green")
+      
+      #if we have at least one valid, enable history / export button
+      self.to_history_button.config(state=NORMAL)
   
   def to_celsius(self):
     self.check_temp(-459)
