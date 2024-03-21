@@ -25,8 +25,8 @@ class Converter:
     self.temp_entry = Entry(self.temp_frame, font=("Arial", "14"))
     self.temp_entry.grid(row=2, padx=10, pady=10)
     error = "*Please enter a number"
-    self.temp_error = Label(self.temp_frame, text="", fg="red")
-    self.temp_error.grid(row=3)
+    self.output_label = Label(self.temp_frame, text="", fg="red")
+    self.output_label.grid(row=3)
 
     # convert button
     self.button_frame = Frame(self.temp_frame)
@@ -34,7 +34,7 @@ class Converter:
 
     self.to_celsius_button = Button(self.button_frame, text="To Celsius", bg="#990099", fg=button_fg, font=button_font, width=12, command=self.to_celsius)
     self.to_celsius_button.grid(row=0, column=0, padx=5, pady=5)
-    self.to_farenheit_button = Button(self.button_frame, text="To Farenheit", bg="#009900", fg=button_fg, font=button_font, width=12)
+    self.to_farenheit_button = Button(self.button_frame, text="To Farenheit", bg="#009900", fg=button_fg, font=button_font, width=12, command=self.to_fahrenheit)
     self.to_farenheit_button.grid(row=0, column=1, padx=5, pady=5)
     # sitch screens button
     self.to_help_button = Button(self.button_frame, text="Help / Info", bg="#CC6600", fg=button_fg, font=button_font, width=12)
@@ -74,6 +74,14 @@ class Converter:
       self.var_feedback.set("Converting {} to Celsius".format(to_conver))
       
     self.output_answer()
+    
+  def to_fahrenheit(self):
+    to_conver = self.check_temp(-273)
+    if to_conver != "invalid":
+      # do calulation
+      self.var_feedback.set("Converting {} to Fahrenheit".format(to_conver))
+
+    self.output_answer()
 
   #shows user output and clears entry widget ready for next calculations
   def output_answer(self):
@@ -82,12 +90,12 @@ class Converter:
     
     if has_error == "yes":
       # red text, pink entry box
-      self.temp_error.config(fg="red")
+      self.output_label.config(fg="red")
       self.temp_entry.config(bg="pink")
     else:
-      self.temp_error.config(fg="blue")
+      self.output_label.config(fg="blue")
       self.temp_entry.config(bg="white")
-    self.temp_error.config(text=output)
+    self.output_label.config(text=output)
 #main routine
 if __name__ == "__main__":
   root = Tk()
