@@ -3,8 +3,7 @@ from functools import partial
 
 class Converter:
     def __init__(self):
-        button_font_12 = ("Arial", "12", "bold")
-        button_font_14 = ("Arial", "14", "bold")
+        button_font_12 = ("Arial", 12, "bold")
         button_fg = "#FFFFFF"
 
         self.temp_frame = Frame(padx=10, pady=10)
@@ -13,7 +12,7 @@ class Converter:
         self.button_frame = Frame(padx=30, pady=30)
         self.button_frame.grid(row=0)
 
-        self.to_history_button = Button(self.button_frame, text="History / Export", bg="#004C99", fg=button_fg, font=button_font_12, width=12, state=DISABLED, command=self.to_history)
+        self.to_history_button = Button(self.button_frame, text="History / Export", bg="#004C99", fg=button_fg, font=button_font_12, width=12, state=NORMAL, command=self.to_history)
         self.to_history_button.grid(row=1, column=1, padx=5, pady=5)
 
     def to_history(self):
@@ -23,6 +22,7 @@ class DisplayHistory:
     def __init__(self, partner):
         self.background = "#ffe6cc"
         button_font_12 = ("Arial", "12", "bold")
+        button_font_14 = ("Arial", "14", "bold")
         self.history_box = Toplevel()
         partner.to_history_button.config(state=DISABLED)
         self.history_box.protocol('WM_DELETE_WINDOW', partial(self.close_history, partner))
