@@ -5,7 +5,11 @@ class Converter:
   def __init__(self):
     button_font_12 = ("Arial", 12, "bold")
     button_fg = "#FFFFFF"
-
+    #5 item list
+    #self.all_calculations = ["0 F is -18 C", "0 C is 32 F", "30 F is -1", "30 C is 86 F", "40 F is 4 C"]
+    #6 item list
+    self.all_calculations = ["0 F is -18 C", "0 C is 32 F", "30 F is -1", "30 C is 86 F", "40 F is 4 C", "100 C is 212 F"]
+    # set up GUI frame
     self.temp_frame = Frame(padx=10, pady=10)
     self.temp_frame.grid()
 
@@ -14,13 +18,14 @@ class Converter:
 
     self.to_history_button = Button(self.button_frame, text="History / Export", bg="#004C99", fg=button_fg, font=button_font_12, width=12, state=DISABLED, command=lambda: self.to_history(self.all_calculations))
     self.to_history_button.grid(row=1, column=1, padx=5, pady=5)
+    # ***** Remove when integrating *****
     self.to_history_button.config(state=NORMAL)
 
   def to_history(self, all_calculations):
     DisplayHistory(self, all_calculations)
 
 class DisplayHistory:
-  def __init__(self, partner):
+  def __init__(self, partner, calc_list):
     #max number of calculations to be displayed
     max_calcs = 5
     self.var_max_calcs = IntVar()
@@ -56,7 +61,7 @@ class DisplayHistory:
     self.text_instructions_label = Label(self.history_frame, text=history_text, width=40, justify="left", wraplength=300, padx=10, pady=10)
     self.text_instructions_label.grid(row=1)
 
-    self.all_calcs_label = Label(self.history_frame, text="CAL goes here", padx=10, pady=10, bg=self.background, width=40, justify="left")
+    self.all_calcs_label = Label(self.history_frame, text=calc_string_text, padx=10, pady=10, bg=calc_background, width=40, justify="left")
     self.all_calcs_label.grid(row=2)
 
     save_text = "Either choose a custom file name (and push \n <Export>) or simply push <Export> to save your \n CAL to a text file. if the \n file already exists, it will be overwritten."
