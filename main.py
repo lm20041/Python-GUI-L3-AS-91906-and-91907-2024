@@ -118,11 +118,10 @@ class DisplayHistory:
     else:
       # check filename is valid
       filename_ok = self.check_filename(filename)
-      pass
 
     if filename_ok == "":
       filename += ".txt"
-      self.filename_error_label.config("you are ok")
+      self.filename_error_label.config(text="you are ok")
     else:
       self.filename_error_label.config(text=filename_ok)
 
