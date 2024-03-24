@@ -137,6 +137,19 @@ class DisplayHistory:
     
     return "{}_{}_{}".format(year, month, day)
 
+  def check_filename(self, filename):
+    problem = ""
+    #
+    valid_char = "[A-Za-z0-9_]"
+    #
+    for letter in filename:
+      if re.match(valid_char, letter):
+        continue
+      elif letter == " ":
+        problem = "sorry, no spaces allowed"
+      else:
+        problem = ("sorry, no {}'s allowed".format(letter))
+      break
   
   def close_history(self, partner):
     partner.to_history_button.config(state=NORMAL)
