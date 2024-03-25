@@ -1,5 +1,7 @@
 from tkinter import *
 from functools import partial
+from datetime import date
+import re
 
 class Converter:
   def __init__(self):
@@ -30,6 +32,12 @@ class DisplayHistory:
     max_calcs = 5
     self.var_max_calcs = IntVar()
     self.var_max_calcs.set(max_calcs)
+
+    # set filename var
+    self.var_filename = StringVar()
+    self.var_today_date = StringVar()
+    self.var_calc_list = StringVar()
+
     #convert cal list to string
     calc_string_text = self.get_cals_string(calc_list)
 
@@ -71,13 +79,13 @@ class DisplayHistory:
     self.filename_entry = Entry(self.history_frame, font=("Arial", "12"), bg="#ffffff", width=25)
     self.filename_entry.grid(row=4)
 
-    self.filename_error_label = Label(self.history_frame, text="Filename error goes here", fg="#9C0000", font=button_font_12)
-    self.filename_error_label.grid(row=5)
+    self.filename_feedback_label = Label(self.history_frame, text="", fg="#9C0000", wraplength=300, font=button_font_12)
+    self.filename_feedback_label.grid(row=5)
 
     self.button_frame = Frame(self.history_frame)
     self.button_frame.grid(row=6)
 
-    self.export_button = Button(self.button_frame, font=button_font_12, text="Export", bg="#004C99", fg="#FFFFFF", width=12, command=self.export_history)
+    self.export_button = Button(self.button_frame, font=button_font_12, text="Export", bg="#004C99", fg="#FFFFFF", width=12, command=self.make_file)
     self.export_button.grid(row=0, column=0, padx=10, pady=10)
 
     self.dismiss_button = Button(self.button_frame, font=button_font_12, text="Dismiss", bg="#666666", fg="#FFFFFF", width=12, command=partial(self.close_history, partner))
@@ -87,6 +95,12 @@ class DisplayHistory:
     #max_calcs
     max_calcs = self.var_max_calcs.get()
     calc_string = ""
+    # generate string for writing to file
+    oldest_first = ""
+    for item in var_cal:
+      oldest_first += item + "\n"
+    self.var_calc_list.set(oldest_first)
+
     #work out how many calculations to display
     if len(var_cal) >= max_calcs:
       stop = max_calcs
@@ -99,16 +113,86 @@ class DisplayHistory:
     calc_string += var_cal[-max_calcs]
     return calc_string
 
+  def make_file(self):
+    filename = self.filename_entry.get()
+
+    filename_ok = ""
+    date_part = self.get_date()
+
+    if filename == "":
+      # get date & create file name
+      filename = "{}_Temperature_CAL".format(date_part)
+    else:
+      # check filename is valid
+      filename_ok = self.check_filename(filename)
+
+    if filename_ok == "":
+      filename += ".txt"
+      success = "Succes! your CAL history has \n been saved as {}".format(filename)
+      self.var_filename.set(filename)
+      self.filename_feedback_label.config(text=success, fg="dark green")
+      self.filename_entry.config(bg="#ffffff")
+      # write content to file
+      self.write_to_file()
+    else:
+      self.filename_feedback_label.config(text=filename_ok, fg="dark red")
+      self.filename_entry.config(bg="#f8cecc")
+
+  def get_date(self):
+    today = date.today()
+
+    day = today.strftime("%d")
+    month = today.strftime("%m")
+    year = today.strftime("%Y")
+
+    todays_date = "{}_{}_{}".format(day, month, year)
+    self.var_today_date.set(todays_date)
+
+    return "{}_{}_{}".format(year, month, day)
+
+  @staticmethod
+  def check_filename(filename):
+    problem = ""
+    #
+    valid_char = "[A-Za-z0-9_]"
+    #
+    for letter in filename:
+      if re.match(valid_char, letter):
+        continue
+      elif letter == " ":
+        problem = "sorry, no spaces allowed"
+      else:
+        problem = ("sorry, no {}'s allowed".format(letter))
+      break
+
+  def write_to_file(self):
+    # retrieve date, filename and CAL history...
+    filename = self.var_filename.get()
+    date_part = self.var_today_date.get()
+
+    # set up strings to be written to file
+    heading = "Temperature Calculator History \n"
+    generated = "Generated on: {} \n".format(date_part)
+    sub_heading = "Here is your CALs history: \n"
+    all_CAL = self.var_calc_list.get()
+
+    to_output_list = [heading, generated, sub_heading, all_CAL]
+
+    # write to file
+    # write output to file
+    text_file = open(filename, "w+")
+    for item in to_output_list:
+      text_file.write(item)
+      text_file.write("\n")
+
+    # close file
+    text_file.close()
+
   def close_history(self, partner):
     partner.to_history_button.config(state=NORMAL)
     self.history_box.destroy()
 
-  def export_history(self):
-    filename = self.filename_entry.get()
-    # Add functionality here to save the history to a file with the specified filename
-    # Handle filename validation and error messages
-    print(f"Exporting history to file: {filename}")
-
+# ***** Main Routine *****
 if __name__ == "__main__":
   root = Tk()
   root.title("Temperature Converter")
