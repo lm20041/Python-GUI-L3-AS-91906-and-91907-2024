@@ -36,6 +36,7 @@ class DisplayHistory:
     # set filename var
     self.var_filename = StringVar()
     self.var_today_date = StringVar()
+    self.var_calc_list = StringVar()
     
     #convert cal list to string
     calc_string_text = self.get_cals_string(calc_list)
@@ -78,8 +79,8 @@ class DisplayHistory:
     self.filename_entry = Entry(self.history_frame, font=("Arial", "12"), bg="#ffffff", width=25)
     self.filename_entry.grid(row=4)
 
-    self.filename_error_label = Label(self.history_frame, text="Filename error goes here", fg="#9C0000", font=button_font_12)
-    self.filename_error_label.grid(row=5)
+    self.filename_feedback_label = Label(self.history_frame, text="", fg="#9C0000", wraplength=300, font=button_font_12)
+    self.filename_feedback_label.grid(row=5)
 
     self.button_frame = Frame(self.history_frame)
     self.button_frame.grid(row=6)
@@ -94,6 +95,12 @@ class DisplayHistory:
     #max_calcs
     max_calcs = self.var_max_calcs.get()
     calc_string = ""
+    # generate string for writing to file
+    oldest_first = ""
+    for item in var_cal:
+      oldest_first += item + "\n"
+    self.var_calc_list.set(oldest_first)
+    
     #work out how many calculations to display
     if len(var_cal) >= max_calcs:
       stop = max_calcs
@@ -110,10 +117,10 @@ class DisplayHistory:
     filename = self.filename_entry.get()
 
     filename_ok = ""
+    date_part = self.get_date()
     
     if filename == "":
       # get date & create file name
-      date_part = self.get_date()
       filename = "{}_Temperature_CAL".format(date_part)
     else:
       # check filename is valid
@@ -121,9 +128,15 @@ class DisplayHistory:
 
     if filename_ok == "":
       filename += ".txt"
-      self.filename_error_label.config(text="you are ok")
+      success = "Succes! your CAL history has \n been saved as {}".format(filename)
+      self.var_filename.set(filename)
+      self.filename_feedback_label.config(text=success, fg="dark green")
+      self.filename_entry.config(bg="#ffffff")
+      # write content to file
+      self.write_to_file(filename)
     else:
-      self.filename_error_label.config(text=filename_ok)
+      self.filename_feedback_label.config(text=filename_ok, fg="dark red")
+      self.filename_entry.config(bg="#f8cecc")
 
   def get_date(self):
     today = date.today()
@@ -136,8 +149,9 @@ class DisplayHistory:
     self.var_today_date.set(todays_date)
     
     return "{}_{}_{}".format(year, month, day)
-
-  def check_filename(self, filename):
+    
+  @staticmethod
+  def check_filename(filename):
     problem = ""
     #
     valid_char = "[A-Za-z0-9_]"
