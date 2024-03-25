@@ -133,7 +133,7 @@ class DisplayHistory:
       self.filename_feedback_label.config(text=success, fg="dark green")
       self.filename_entry.config(bg="#ffffff")
       # write content to file
-      self.write_to_file(filename)
+      self.write_to_file()
     else:
       self.filename_feedback_label.config(text=filename_ok, fg="dark red")
       self.filename_entry.config(bg="#f8cecc")
@@ -164,6 +164,29 @@ class DisplayHistory:
       else:
         problem = ("sorry, no {}'s allowed".format(letter))
       break
+
+  def write_to_file(self):
+    # retrieve date, filename and CAL history...
+    filename = self.var_filename.get()
+    date_part = self.var_today_date.get()
+    
+    # set up strings to be written to file
+    heading = "Temperature Calculator History \n"
+    generated = "Generated on: {} \n".format(date_part)
+    sub_heading = "Here is your CALs history: \n"
+    all_CAL = self.var_calc_list.get()
+    
+    to_output_list = [heading, generated, sub_heading, all_CAL]
+    
+    # write to file
+    # write output to file
+    text_file = open(filename, "w+")
+    for item in to_output_list:
+      text_file.write(item)
+      text_file.write("\n")
+    
+    # close file
+    text_file.close()
   
   def close_history(self, partner):
     partner.to_history_button.config(state=NORMAL)
