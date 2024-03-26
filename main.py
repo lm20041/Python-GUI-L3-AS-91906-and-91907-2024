@@ -21,19 +21,22 @@ class Converter:
     # set up GUI Frame
     self.temp_frame = Frame(padx=10, pady=10)
     self.temp_frame.grid()
+    # ***** row0 ****** 
     self.temp_heading = Label(self.temp_frame, text="Your Temperature Converter", font=("Arial", "16", "bold"))
     self.temp_heading.grid(row=0)
-
+    # ***** row1 ****** 
     instructions = "please enter a temperature in either degrees C or F"
     self.temp_instructions = Label(self.temp_frame, text=instructions, wrap=250, width=40, justify="left")
     self.temp_instructions.grid(row=1)
+    # ***** row2 ****** 
     self.temp_entry = Entry(self.temp_frame, font=("Arial", "14"))
     self.temp_entry.grid(row=2, padx=10, pady=10)
     error = "*Please enter a number"
+    # ***** row3 ****** 
     self.output_label = Label(self.temp_frame, text="", fg="red")
     self.output_label.grid(row=3)
 
-    # convert button
+    # ***** row4 ****** convert button
     self.button_frame = Frame(self.temp_frame)
     self.button_frame.grid(row=4)
 
@@ -52,7 +55,6 @@ class Converter:
     error = "Please enter a number that is more than {}".format(min_value)
     response = self.temp_entry.get()
     try:
-
       response = float(response)
       if response < min_value:
         has_error = "yes"
@@ -73,7 +75,7 @@ class Converter:
       return response
   # round
   @staticmethod
-  def round_ans(self, answer):
+  def round_ans( answer):
     var_rounded = round(answer)
     return var_rounded
 
@@ -85,12 +87,12 @@ class Converter:
     feedback = ""
     answer = ""
     from_to = ""
-    if to_convert != "invalid":
+    if to_convert == "invalid":
       set_feedback = "No"
 
     elif min_val == -459:
       # do Calulation
-      answer = (to_convert - 32) * 5 / 9
+      answer = (to_convert-32)*5/9
       from_to = "{} F{} is {} C{}"
     else:
       answer = to_convert * 1.8 + 32
@@ -183,11 +185,12 @@ class DisplayHistory:
 
     self.history_frame = Frame(self.history_box, width=300, height=200)
     self.history_frame.grid()
-
+    
+    # ***** row0 *****
     self.history_heading_label = Label(self.history_frame, text="History / Export", font=button_font_14)
     self.history_heading_label.grid(row=0)
 
-    # decide which history of calculations to displays
+    # ***** row1 ***** decide which history of calculations to displays
     num_calcs = len(calc_list)
     if num_calcs > max_calcs:
       calc_background = "#FFE6CC" #peach
@@ -200,23 +203,23 @@ class DisplayHistory:
     history_text = "{} \n\n ALL CALS are shown to the nearest degree.".format(showing_all)
     self.text_instructions_label = Label(self.history_frame, text=history_text, width=40, justify="left", wraplength=300, padx=10, pady=10)
     self.text_instructions_label.grid(row=1)
-
+    # ***** row2 *****
     self.all_calcs_label = Label(self.history_frame, text=calc_string_text, padx=10, pady=10, bg=calc_background, width=40, justify="left")
     self.all_calcs_label.grid(row=2)
-
+    # ***** row3 *****
     save_text = "Either choose a custom file name (and push \n <Export>) or simply push <Export> to save your \n CAL to a text file. if the \n file already exists, it will be overwritten."
     self.save_instructions_label = Label(self.history_frame, text=save_text, wraplength=300, justify="left", width=40, padx=10, pady=10)
     self.save_instructions_label.grid(row=3)
-
+    # ***** row4 *****
     self.filename_entry = Entry(self.history_frame, font=("Arial", "12"), bg="#ffffff", width=25)
     self.filename_entry.grid(row=4)
-
+    # ***** row5 *****
     self.filename_feedback_label = Label(self.history_frame, text="", fg="#9C0000", wraplength=300, font=button_font_12)
     self.filename_feedback_label.grid(row=5)
-
+    # ***** row6 ***** import button_frame
     self.button_frame = Frame(self.history_frame)
     self.button_frame.grid(row=6)
-
+    # ***** button_frame-row0 *****
     self.export_button = Button(self.button_frame, font=button_font_12, text="Export", bg="#004C99", fg="#FFFFFF", width=12, command=self.make_file)
     self.export_button.grid(row=0, column=0, padx=10, pady=10)
 
@@ -293,8 +296,10 @@ class DisplayHistory:
         continue
       elif letter == " ":
         problem = "sorry, no spaces allowed"
+        return str(problem)
       else:
-        problem = ("sorry, no {}'s allowed".format(letter))
+        problem = str("sorry, no {}'s allowed".format(letter))
+        return str(problem)
       break
 
   def write_to_file(self):
